@@ -75,8 +75,10 @@ final class FCMController {
             
             
             let postData = try JSONSerialization.data(withJSONObject: parameters, options:.prettyPrinted)
-            
-            let request = NSMutableURLRequest(url: NSURL(string: "https://fcm.googleapis.com/fcm/send")! as URL,
+        
+        
+        let url = URL(string: "https://fcm.googleapis.com/fcm/send")
+        let request = NSMutableURLRequest(url: url!,
                                               cachePolicy: .useProtocolCachePolicy,
                                               timeoutInterval: 10.0)
             request.httpMethod = "POST"
