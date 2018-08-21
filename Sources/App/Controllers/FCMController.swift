@@ -14,17 +14,16 @@ import FluentSQLite
 final class FCMController {
     
     /// Returns a list of all todos for the auth'd user.
-    func send(_ req: Request) throws -> String {
+    func send(_ req: Request) throws ->  Future<FCMData>  {
         
         
-        _ = try req.requireAuthenticated(User.self)
+        let user = try req.requireAuthenticated(User.self)
         
         
         // decode request content
-//        return try req.content.decode(MessageRequest.self).flatMap { fmassage in
+        return try req.content.decode(FCMData.self).flatMap { fmassage in
             // save new todo
 
-            
             
             
             let headers = [
@@ -52,23 +51,23 @@ final class FCMController {
             
             let notification = [
                 
-                "body" : "great match!",
+                "body" : fmassage.body,
                 "content_available" : true,
                 "priority" : "high",
-                "title" : "Portugal vs. Denmark"
+                "title" : fmassage.title
                 
                 ]as [String : Any]
             
             let data = [
-                "body" : "great match!",
+                "body" : fmassage.body,
                 "content_available" : true,
                 "priority" : "high",
-                "title" : "Portugal vs. Denmark"
+                "title" : fmassage.title
 
                 ] as [String : Any]
             
             let parameters = [
-                "to": "/topics/newHotel",
+                "to": fmassage.topic,
                 "notification": notification,
                 "data": data
                 ] as [String : Any]
@@ -97,8 +96,12 @@ final class FCMController {
                 } else {
                     let httpResponse = response as? HTTPURLResponse
                     print(httpResponse as Any)
-//                    return try "Girish"
+                    
+                    
+                
                 }
+                
+                
             })
         
         
@@ -115,11 +118,12 @@ final class FCMController {
 //        //        let message = FCMMessage(token: token, notification: notification)
 //            return try fcm.sendMessage(req.client(), message: message)
 //
-//        }
-   
+            
+          return try FCMData(topic:fmassage.topic, title: fmassage.title, body: fmassage.body, userID: user.requireID()).save(on: req)
+            
+        }
         
         
-   return "Girish"
     }
     
 }

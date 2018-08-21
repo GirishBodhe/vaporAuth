@@ -20,7 +20,8 @@ final class FCMData: SQLiteModel {
     var body : String
     
     var userID: User.ID
-    
+   
+   
     /// Creates a new `FCMData`.
     init(id: Int? = nil, topic: String,title: String, body: String, userID: User.ID) {
         self.id = id
