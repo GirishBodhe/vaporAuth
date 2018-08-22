@@ -26,8 +26,6 @@ final class FCMController {
 
         return try req.content.decode(MessageRequest.self).map(to: String.self) { messageRequest in
             
-            
-            
             let headers = [
                 "Content-Type": "application/json",
                 "Cache-Control": "no-cache",
@@ -53,18 +51,18 @@ final class FCMController {
             
             let notification = [
                 
-                "body" : "great match!",
+                "body" : messageRequest.body,
                 "content_available" : true,
                 "priority" : "high",
-                "title" : "Portugal vs. Denmark"
+                "title" : messageRequest.title
                 
                 ]as [String : Any]
             
             let data = [
-                "body" : "great match!",
+                "body" : messageRequest.body,
                 "content_available" : true,
                 "priority" : "high",
-                "title" : "Portugal vs. Denmark"
+                "title" : messageRequest.title
 
                 ] as [String : Any]
             
