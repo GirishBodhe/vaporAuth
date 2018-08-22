@@ -14,16 +14,18 @@ import FluentSQLite
 final class FCMController {
     
     /// Returns a list of all todos for the auth'd user.
-    func send(_ req: Request) throws ->  Future<FCMData>  {
+    func send(_ req: Request) throws -> Future<String> {
         
         
-        let user = try req.requireAuthenticated(User.self)
+        _ = try req.requireAuthenticated(User.self)
         
         
         // decode request content
-        return try req.content.decode(FCMData.self).flatMap { fmassage in
+//        return try req.content.decode(MessageRequest.self).flatMap { fmassage in
             // save new todo
 
+        return try req.content.decode(MessageRequest.self).map(to: String.self) { messageRequest in
+            
             
             
             let headers = [
@@ -51,23 +53,23 @@ final class FCMController {
             
             let notification = [
                 
-                "body" : fmassage.body,
+                "body" : "great match!",
                 "content_available" : true,
                 "priority" : "high",
-                "title" : fmassage.title
+                "title" : "Portugal vs. Denmark"
                 
                 ]as [String : Any]
             
             let data = [
-                "body" : fmassage.body,
+                "body" : "great match!",
                 "content_available" : true,
                 "priority" : "high",
-                "title" : fmassage.title
+                "title" : "Portugal vs. Denmark"
 
                 ] as [String : Any]
             
             let parameters = [
-                "to": fmassage.topic,
+                "to": "/topics/newHotel",
                 "notification": notification,
                 "data": data
                 ] as [String : Any]
@@ -92,16 +94,11 @@ final class FCMController {
                     print(error as Any)
                     
                     
-                    
                 } else {
                     let httpResponse = response as? HTTPURLResponse
                     print(httpResponse as Any)
-                    
-                    
-                
+//                    return try "Girish"
                 }
-                
-                
             })
         
         
@@ -118,12 +115,13 @@ final class FCMController {
 //        //        let message = FCMMessage(token: token, notification: notification)
 //            return try fcm.sendMessage(req.client(), message: message)
 //
+        
             
-          return try FCMData(topic:fmassage.topic, title: fmassage.title, body: fmassage.body, userID: user.requireID()).save(on: req)
+            throw Abort(.badRequest, reason: "Invalid URL string")
             
         }
-        
-        
+   
+   
     }
     
 }
